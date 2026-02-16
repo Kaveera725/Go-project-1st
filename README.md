@@ -7,6 +7,17 @@ A modern hotel food menu management system built with **Go (Gin)**, **React + Ty
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)
 ![Tailwind](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat&logo=tailwindcss&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+
+---
+
+## 📚 Documentation
+
+- **[Complete Deployment Guide](COMPLETE-DEPLOYMENT-GUIDE.md)** - Step-by-step deployment instructions (local + AWS EC2 + CI/CD)
+- **[Project Documentation](PROJECT-DOCUMENTATION.md)** - Architecture, tech stack, API, and component details
+- **[EC2 Deployment Steps](EC2-DEPLOYMENT-STEPS.md)** - Ubuntu-specific AWS deployment guide
+- **[Quick Reference](QUICK-REFERENCE.md)** - Quick commands and troubleshooting
+- **[Deployment Config Guide](DEPLOYMENT-CONFIG-GUIDE.md)** - Configuration details for production
 
 ---
 
@@ -67,23 +78,29 @@ Go-project-1st/
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
 
 - **Go** 1.21+  
 - **Node.js** 18+  
 - **PostgreSQL** 14+  
-- (Optional) **Docker** & **Docker Compose**
+- **Docker** & **Docker Compose** (recommended)
 
 ---
 
-### Option 1 — Run with Docker (Easiest)
+### Option 1 — Run with Docker (Recommended ⭐)
 
 ```bash
+# Clone repository
+git clone https://github.com/YOUR_USERNAME/Go-project-1st.git
+cd Go-project-1st
+
+# Start all services
 docker-compose up --build
 ```
 
+**Access the application:**
 - Frontend → http://localhost:3000  
 - Backend API → http://localhost:8080/api/foods  
 - PostgreSQL → localhost:5432 (auto-seeded)
@@ -91,6 +108,8 @@ docker-compose up --build
 ---
 
 ### Option 2 — Run Manually
+
+For detailed manual setup instructions, see [COMPLETE-DEPLOYMENT-GUIDE.md](COMPLETE-DEPLOYMENT-GUIDE.md#option-2-manual-setup-for-learning)
 
 #### 1. Set up PostgreSQL
 
@@ -161,73 +180,76 @@ Copy `.env.example` to `.env` in the `backend/` directory and update values:
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
-DB_PASSWORD=your_password
-DB_NAME=hotel_menu
-DB_SSLMODE=disable
-SERVER_PORT=8080
-```
+DB_PASProduction Deployment
 
----
+Deploy to AWS EC2 with Docker Compose (no RDS needed - cost-effective!).
 
-## ☁️ AWS Deployment (EC2 with Local PostgreSQL)
+### Quick Deployment Steps
 
-Deploy to AWS EC2 with PostgreSQL running in Docker (no RDS needed - cost-effective!).
+1. **Launch EC2 Instance** (Ubuntu 24.04 LTS, t2.micro - Free Tier)
+2. **Install Docker and Docker Compose**
+3. **Clone repository and configure `.env`**
+4. **Run:** `docker-compose -f docker-compose.prod.yml up -d --build`
 
-### Quick Start
+**Access your application:**
+- **Frontend:** `http://YOUR_EC2_IP:3000`
+- **Backend API:** `http://YOUR_EC2_IP:8080/api/foods`
 
-1. **Launch EC2 Instance** (t2.micro - Free Tier eligible)
-2. **Push code to GitHub**
-3. **SSH into EC2 and run:**
+### Detailed Deployment Guide
 
-```bash
-# Clone repository
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git ~/hotel-menu-manager
-cd ~/hotel-menu-manager
+📖 **[Complete step-by-step instructions →](COMPLETE-DEPLOYMENT-GUIDE.md)**
 
-# Configure environment
-cp .env.example .env
-nano .env  # Update with your EC2 public IP
-
-# Deploy with Docker
-docker-compose -f docker-compose.prod.yml up -d --build
-```
-
-### Detailed Instructions
-
-See **[AWS-DEPLOYMENT-GUIDE.txt](AWS-DEPLOYMENT-GUIDE.txt)** for complete step-by-step instructions including:
-- AWS account setup
-- EC2 instance configuration
-- Security group setup
-- Docker installation
-- Database initialization
-- Troubleshooting
+Includes:
+- ✅ EC2 setup and security configuration
+- ✅ Docker and Docker Compose installation
+- ✅ Environment configuration
+- ✅ CI/CD with GitHub Actions (self-hosted runner)
+- ✅ Troubleshooting common issues
+- ✅ Maintenance and monitoring
 
 ### Cost Information
 
 **Free Tier (First 12 months):**
 - EC2 t2.micro: 750 hours/month FREE
-- No RDS charges (database in Docker)
-- **Total: $0/month**
+- Storage: 30 GB EBS FREE
+- **Total: $0/month** ✨
 
 **After Free Tier:**
-- ~$11-14/month (EC2 + storage)
-- **Savings: $6-12/month vs using RDS**
-
-### Access Your Application
-
-- **Frontend**: `http://YOUR_EC2_IP:3000`
-- **Backend API**: `http://YOUR_EC2_IP:8080/api/foods`
+- ~$12-16/month (EC2 + storage + bandwidth)
+- **Much cheaper than using RDS!**
 
 ---
 
-## 🛠️ Deployment Scripts
+## 🛠️ CI/CD & Automation
 
-| Script | Description |
-|--------|-------------|
-| `deploy-aws.bat` | Windows batch file with interactive menu for AWS setup |
-| `deploy-ec2.sh` | Linux shell script for automated EC2 deployment |
-| `docker-compose.yml` | Local development with PostgreSQL container |
-| `docker-compose.prod.yml` | Production deployment using AWS RDS |
+This project includes GitHub Actions workflows for automated deployment:
+
+- **Self-hosted runner** - Deploy directly from EC2 instance
+- **SSH-based deployment** - Deploy from GitHub cloud runners
+- **Automated testing** - Run tests before deployment
+- **Docker image building** - Automatic image updates
+
+See [COMPLETE-DEPLOYMENT-GUIDE.md](COMPLETE-DEPLOYMENT-GUIDE.md#cicd-with-github-actions) for setup instructions.
+
+---
+
+## 📖 Additional Resources
+
+- **[Complete Deployment Guide](COMPLETE-DEPLOYMENT-GUIDE.md)** - Full production deployment walkthrough
+- **[Project Documentation](PROJECT-DOCUMENTATION.md)** - Technical architecture and component details
+- **[EC2 Deployment Steps](EC2-DEPLOYMENT-STEPS.md)** - AWS-specific deployment guide
+- **[Quick Reference](QUICK-REFERENCE.md)** - Quick commands for common tasks
+- **[Config Guide](DEPLOYMENT-CONFIG-GUIDE.md)** - Environment and configuration details
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to:
+- Report bugs
+- Suggest new features
+- Submit pull requests
+- Improve documentation
 
 ---
 

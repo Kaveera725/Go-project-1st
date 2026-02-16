@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Food, FoodInput, CATEGORIES } from '../types/food';
+import { useEffect, useState } from 'react';
+import { CATEGORIES, Food, FoodInput } from '../types/food';
 
 interface FoodFormModalProps {
   food: Food | null; // null = add mode, Food = edit mode

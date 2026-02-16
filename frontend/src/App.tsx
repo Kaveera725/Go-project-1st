@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import FoodList from './components/FoodList';
 import FoodFormModal from './components/FoodFormModal';
+import FoodList from './components/FoodList';
 import Toast from './components/Toast';
-import { Food, FoodInput } from './types/food';
 import { createFood, updateFood } from './services/foodService';
+import { Food, FoodInput } from './types/food';
 
 function App() {
   const [showModal, setShowModal] = useState(false);
