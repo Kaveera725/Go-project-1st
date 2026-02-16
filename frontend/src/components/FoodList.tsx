@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { deleteFood, getAllFoods } from '../services/foodService';
 import { Food } from '../types/food';
+import { getAllFoods, deleteFood } from '../services/foodService';
 import DeleteConfirmModal from './DeleteConfirmModal';
 
 interface FoodListProps {
