@@ -1,0 +1,44 @@
+name: Deploy Hotel Menu Manager
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Pull latest changes
+        run: |
+          cd /home/ubuntu/Go-project-1st
+          git pull origin main
+
+      - name: Stop containers
+        run: |
+          cd /home/ubuntu/Go-project-1st
+          docker-compose -f docker-compose.prod.yml down
+
+      - name: Build and start
+        run: |
+          cd /home/ubuntu/Go-project-1st
+          DOCKER_BUILDKIT=0 docker-compose -f docker-compose.prod.yml up -d --build
+
+      - name: Wait for services
+        run: sleep 30
+
+      - name: Verify deployment
+        run: |
+          curl -f http://localhost:8080/api/foods || echo "⚠️ Backend not ready"
+          curl -f http://localhost:3000 || echo "⚠️ Frontend not ready"
+
+      - name: Show status
+        run: |
+          docker ps
+          echo "✅ Deployment complete!"
+          echo "Frontend: http://65.2.35.4:3000"
+          echo "Backend: http://65.2.35.4:8080/api/foods"
