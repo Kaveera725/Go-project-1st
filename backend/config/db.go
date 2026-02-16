@@ -16,8 +16,8 @@ var DB *sql.DB
 func ConnectDB() {
 	host := getEnv("DB_HOST", "localhost")
 	port := getEnv("DB_PORT", "5432")
-	user := getEnv("DB_USER", "postgres")
-	password := getEnv("DB_PASSWORD", "postgres")
+	user := getEnv("DB_USER", "anushad")
+	password := getEnv("DB_PASSWORD", "hotel_munu_pass")
 	dbname := getEnv("DB_NAME", "hotel_menu")
 	sslmode := getEnv("DB_SSLMODE", "disable")
 
