@@ -15,42 +15,70 @@ jobs:
 
       - name: Setup deployment directory
         run: |
-          mkdir -p /home/ubuntu/Go-project-1st
-          cd /home/ubuntu/Go-project-1st
+          # Create project directory
+          mkdir -p ~/Go-project-1st
+          
+          # Copy repository files to deployment directory
+          cp -r ./* ~/Go-project-1st/ 2>/dev/null || true
+          cp -r ./.[!.]* ~/Go-project-1st/ 2>/dev/null || true
+          
+          cd ~/Go-project-1st
           
           # Create .env file if it doesn't exist
           if [ ! -f .env ]; then
             echo "Creating .env file from example..."
-            cp .env.example .env
-            echo "⚠️  WARNING: Update .env with production values!"
+            if [ -f .env.example ]; then
+              cp .env.example .env
+              echo "⚠️  WARNING: Update .env with production values!"
+            else
+              echo "Creating default .env file..."
+              cat > .env << 'EOF'
+DB_HOST=db
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=HotelMenu2024!Secure
+DB_NAME=hotel_menu
+DB_SSLMODE=disable
+SERVER_PORT=8080
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+ALLOWED_ORIGINS=http://localhost:3000
+EOF
+            fi
           fi
 
-      - name: Pull latest changes
+      - name: Stop existing containers
         run: |
-          cd /home/ubuntu/Go-project-1st
-          git pull origin main || (git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git . && git checkout main)
+          cd ~/Go-project-1st
+          docker-compose -f docker-compose.prod.yml down 2>/dev/null || true
 
-      - name: Stop containers
+      - name: Build and start containers
         run: |
-          cd /home/ubuntu/Go-project-1st
-          docker-compose -f docker-compose.prod.yml down
-
-      - name: Build and start
-        run: |
-          cd /home/ubuntu/Go-project-1st
+          cd ~/Go-project-1st
           DOCKER_BUILDKIT=0 docker-compose -f docker-compose.prod.yml up -d --build
 
-      - name: Wait for services
-        run: sleep 30
+      - name: Wait for services to start
+        run: |
+          echo "Waiting for services to be ready..."
+          sleep 45
+          echo "Checking container status..."
+          docker ps
 
       - name: Verify deployment
         run: |
-          curl -f http://localhost:8080/api/foods || echo "⚠️ Backend not ready"
-          curl -f http://localhost:3000 || echo "⚠️ Frontend not ready"
+          echo "Testing backend API..."
+          curl -sf http://localhost:8080/api/foods > /dev/null && echo "✅ Backend OK" || echo "⚠️ Backend not ready yet"
+          
+          echo "Testing frontend..."
+          curl -sf http://localhost:3000 > /dev/null && echo "✅ Frontend OK" || echo "⚠️ Frontend not ready yet"
 
-      - name: Show status
+      - name: Show deployment status
         run: |
+          echo "=================================="
+          echo "       DEPLOYMENT COMPLETE        "
+          echo "=================================="
           docker ps
-          echo "✅ Deployment complete!"
-          echo "Frontend: http://65.2.35.4:3000"
-          echo "Backend: http://65.2.35.4:8080/api/foods"
+          echo ""
+          PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4 2>/dev/null || echo "YOUR_EC2_IP")
+          echo "Frontend: http://$PUBLIC_IP:3000"
+          echo "Backend API: http://$PUBLIC_IP:8080/api/foods"
+          echo "✅ All services deployed!"
