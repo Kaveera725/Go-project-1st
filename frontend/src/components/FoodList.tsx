@@ -7,6 +7,8 @@ interface FoodListProps {
   onEdit: (food: Food) => void;
   onDeleted: () => void;
   onDeleteError: () => void;
+  isAdmin: boolean;
+  onAddToCart?: (food: Food) => void;
 }
 
 const categoryColors: Record<string, string> = {
@@ -16,7 +18,7 @@ const categoryColors: Record<string, string> = {
   Drinks: 'bg-blue-100 text-blue-800',
 };
 
-export default function FoodList({ onEdit, onDeleted, onDeleteError }: FoodListProps) {
+export default function FoodList({ onEdit, onDeleted, onDeleteError, isAdmin, onAddToCart }: FoodListProps) {
   const [foods, setFoods] = useState<Food[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -109,7 +111,7 @@ export default function FoodList({ onEdit, onDeleted, onDeleteError }: FoodListP
                   Status
                 </th>
                 <th className="text-right py-3.5 px-6 font-semibold text-gray-600 uppercase tracking-wider text-xs">
-                  Actions
+                  {isAdmin ? 'Actions' : 'Order'}
                 </th>
               </tr>
             </thead>
@@ -145,24 +147,43 @@ export default function FoodList({ onEdit, onDeleted, onDeleteError }: FoodListP
                     )}
                   </td>
                   <td className="py-5 px-6 text-right space-x-2">
-                    <button
-                      onClick={() => onEdit(food)}
-                      className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-blue-50 transition-all shadow-sm hover:shadow-md"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => setDeleteTarget(food)}
-                      className="inline-flex items-center gap-1 text-red-600 hover:text-red-700 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-red-50 transition-all shadow-sm hover:shadow-md"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                      Delete
-                    </button>
+                    {isAdmin ? (
+                      <>
+                        <button
+                          onClick={() => onEdit(food)}
+                          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-blue-50 transition-all shadow-sm hover:shadow-md"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => setDeleteTarget(food)}
+                          className="inline-flex items-center gap-1 text-red-600 hover:text-red-700 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-red-50 transition-all shadow-sm hover:shadow-md"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          Delete
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => food.available && onAddToCart?.(food)}
+                        disabled={!food.available}
+                        className={`inline-flex items-center gap-1 text-xs font-semibold px-4 py-2 rounded-lg transition-all shadow-sm hover:shadow-md ${
+                          food.available
+                            ? 'text-green-600 hover:text-green-700 hover:bg-green-50'
+                            : 'text-gray-400 cursor-not-allowed'
+                        }`}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+                        </svg>
+                        {food.available ? 'Add to Cart' : 'Unavailable'}
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

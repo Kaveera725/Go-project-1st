@@ -9,6 +9,12 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+// Add auth token to requests that need it
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 // ---------- CRUD operations ----------
 
 export const getAllFoods = async (): Promise<Food[]> => {
@@ -22,15 +28,15 @@ export const getFoodById = async (id: string): Promise<Food> => {
 };
 
 export const createFood = async (food: FoodInput): Promise<Food> => {
-  const res = await api.post('/foods', food);
+  const res = await api.post('/foods', food, { headers: getAuthHeaders() });
   return res.data.data;
 };
 
 export const updateFood = async (id: string, food: FoodInput): Promise<Food> => {
-  const res = await api.put(`/foods/${id}`, food);
+  const res = await api.put(`/foods/${id}`, food, { headers: getAuthHeaders() });
   return res.data.data;
 };
 
 export const deleteFood = async (id: string): Promise<void> => {
-  await api.delete(`/foods/${id}`);
+  await api.delete(`/foods/${id}`, { headers: getAuthHeaders() });
 };
