@@ -13,10 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup deployment directory
+        run: |
+          mkdir -p /home/ubuntu/Go-project-1st
+          cd /home/ubuntu/Go-project-1st
+          
+          # Create .env file if it doesn't exist
+          if [ ! -f .env ]; then
+            echo "Creating .env file from example..."
+            cp .env.example .env
+            echo "⚠️  WARNING: Update .env with production values!"
+          fi
+
       - name: Pull latest changes
         run: |
           cd /home/ubuntu/Go-project-1st
-          git pull origin main
+          git pull origin main || (git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git . && git checkout main)
 
       - name: Stop containers
         run: |
