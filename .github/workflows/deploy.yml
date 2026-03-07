@@ -32,17 +32,15 @@ jobs:
               echo "⚠️  WARNING: Update .env with production values!"
             else
               echo "Creating default .env file..."
-              cat > .env << 'EOF'
-DB_HOST=db
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=HotelMenu2024!Secure
-DB_NAME=hotel_menu
-DB_SSLMODE=disable
-SERVER_PORT=8080
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-ALLOWED_ORIGINS=http://localhost:3000
-EOF
+              echo "DB_HOST=db" > .env
+              echo "DB_PORT=5432" >> .env
+              echo "DB_USER=postgres" >> .env
+              echo "DB_PASSWORD=HotelMenu2024!Secure" >> .env
+              echo "DB_NAME=hotel_menu" >> .env
+              echo "DB_SSLMODE=disable" >> .env
+              echo "SERVER_PORT=8080" >> .env
+              echo "JWT_SECRET=your-super-secret-jwt-key-change-this-in-production" >> .env
+              echo "ALLOWED_ORIGINS=http://localhost:3000" >> .env
             fi
           fi
 
