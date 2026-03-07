@@ -8,17 +8,61 @@ export default function MyOrders() {
 
   useEffect(() => {
     fetchOrders();
+    // Auto-refresh every 10 seconds to get status updates from admin
+    const interval = setInterval(fetchOrders, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchOrders = async () => {
     try {
-      setLoading(true);
       const data = await getMyOrders();
       setOrders(data ?? []);
     } catch {
       // fail silently
     } finally {
       setLoading(false);
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return (
+          <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full bg-yellow-100 text-yellow-800 animate-pulse">
+            ⏳ Pending
+          </span>
+        );
+      case 'preparing':
+        return (
+          <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full bg-blue-100 text-blue-800">
+            👨‍🍳 Preparing
+          </span>
+        );
+      case 'complete':
+        return (
+          <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full bg-green-100 text-green-800">
+            ✅ Complete
+          </span>
+        );
+      default:
+        return (
+          <span className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full bg-gray-100 text-gray-800">
+            {status}
+          </span>
+        );
+    }
+  };
+
+  const getStatusMessage = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return 'Your order has been placed and is waiting to be prepared.';
+      case 'preparing':
+        return 'The chef is preparing your delicious meal!';
+      case 'complete':
+        return 'Your order is ready! Enjoy your meal.';
+      default:
+        return '';
     }
   };
 
@@ -41,50 +85,105 @@ export default function MyOrders() {
     );
   }
 
+  // Group orders by status
+  const activeOrders = orders.filter((o) => o.status !== 'complete');
+  const completedOrders = orders.filter((o) => o.status === 'complete');
+
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold gradient-text flex items-center gap-2">
-        <span>📋</span> My Orders
-      </h2>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold gradient-text flex items-center gap-2">
+          <span>📋</span> My Orders
+        </h2>
+        <p className="text-xs text-gray-500">Auto-refreshing every 10 seconds</p>
+      </div>
 
-      {orders.map((order) => (
-        <div key={order.id} className="glass-effect rounded-2xl overflow-hidden card-hover">
-          <div className="bg-gradient-to-r from-orange-50 to-amber-50 px-6 py-3 border-b border-orange-100 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className={`inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full ${
-                order.status === 'pending'
-                  ? 'bg-yellow-100 text-yellow-800'
-                  : order.status === 'confirmed'
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-gray-100 text-gray-800'
-              }`}>
-                {order.status === 'pending' ? '⏳' : '✅'} {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-              </span>
-              <span className="text-xs text-gray-500">
-                {new Date(order.created_at).toLocaleString()}
-              </span>
-            </div>
-            <span className="font-bold text-orange-600">
-              Rs. {Number(order.total_amount).toLocaleString('en-LK', { minimumFractionDigits: 2 })}
-            </span>
-          </div>
-
-          <div className="p-4">
-            <div className="space-y-2">
-              {order.items?.map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between text-sm py-1">
-                  <span className="text-gray-700">
-                    {item.food_name} <span className="text-gray-400">×{item.quantity}</span>
-                  </span>
-                  <span className="font-semibold text-gray-800">
-                    Rs. {(Number(item.price) * item.quantity).toLocaleString('en-LK', { minimumFractionDigits: 2 })}
+      {/* Active Orders Section */}
+      {activeOrders.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="text-sm font-semibold text-orange-700 flex items-center gap-2">
+            🔥 Active Orders
+          </h3>
+          {activeOrders.map((order) => (
+            <div key={order.id} className="glass-effect rounded-2xl overflow-hidden card-hover border-l-4 border-l-orange-400">
+              <div className="bg-gradient-to-r from-orange-50 to-amber-50 px-6 py-3 border-b border-orange-100 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {getStatusBadge(order.status)}
+                  <span className="text-xs text-gray-500">
+                    {new Date(order.created_at).toLocaleString()}
                   </span>
                 </div>
-              ))}
+                <span className="font-bold text-orange-600">
+                  Rs. {Number(order.total_amount).toLocaleString('en-LK', { minimumFractionDigits: 2 })}
+                </span>
+              </div>
+
+              {/* Status Message */}
+              <div className={`px-6 py-2 text-sm ${
+                order.status === 'pending' ? 'bg-yellow-50 text-yellow-800' :
+                order.status === 'preparing' ? 'bg-blue-50 text-blue-800' :
+                'bg-green-50 text-green-800'
+              }`}>
+                {getStatusMessage(order.status)}
+              </div>
+
+              <div className="p-4">
+                <div className="space-y-2">
+                  {order.items?.map((item, idx) => (
+                    <div key={idx} className="flex items-center justify-between text-sm py-1">
+                      <span className="text-gray-700">
+                        {item.food_name} <span className="text-gray-400">×{item.quantity}</span>
+                      </span>
+                      <span className="font-semibold text-gray-800">
+                        Rs. {(Number(item.price) * item.quantity).toLocaleString('en-LK', { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
-      ))}
+      )}
+
+      {/* Completed Orders Section */}
+      {completedOrders.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="text-sm font-semibold text-green-700 flex items-center gap-2">
+            ✅ Completed Orders
+          </h3>
+          {completedOrders.map((order) => (
+            <div key={order.id} className="glass-effect rounded-2xl overflow-hidden card-hover opacity-80">
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-3 border-b border-green-100 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {getStatusBadge(order.status)}
+                  <span className="text-xs text-gray-500">
+                    {new Date(order.created_at).toLocaleString()}
+                  </span>
+                </div>
+                <span className="font-bold text-green-600">
+                  Rs. {Number(order.total_amount).toLocaleString('en-LK', { minimumFractionDigits: 2 })}
+                </span>
+              </div>
+
+              <div className="p-4">
+                <div className="space-y-2">
+                  {order.items?.map((item, idx) => (
+                    <div key={idx} className="flex items-center justify-between text-sm py-1">
+                      <span className="text-gray-700">
+                        {item.food_name} <span className="text-gray-400">×{item.quantity}</span>
+                      </span>
+                      <span className="font-semibold text-gray-800">
+                        Rs. {(Number(item.price) * item.quantity).toLocaleString('en-LK', { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
