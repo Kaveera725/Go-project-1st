@@ -4,25 +4,53 @@
 
 @layer base {
   body {
-    @apply bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 text-gray-900 min-h-screen;
-    background-image: 
-      radial-gradient(circle at 20% 80%, rgba(251, 191, 36, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(249, 115, 22, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 40% 40%, rgba(234, 88, 12, 0.05) 0%, transparent 40%);
-    background-attachment: fixed;
+    @apply bg-gray-50 text-gray-900 min-h-screen antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  }
+}
+
+@layer components {
+  /* Natural card styling - not overly perfect */
+  .card {
+    @apply bg-white border border-gray-200 rounded-lg shadow-sm;
+  }
+  
+  .card-hover {
+    @apply transition-shadow duration-200 hover:shadow-md;
+  }
+  
+  /* Realistic button styles */
+  .btn-primary {
+    @apply px-4 py-2 bg-orange-600 text-white rounded-md font-medium hover:bg-orange-700 transition-colors shadow-sm;
+  }
+  
+  .btn-secondary {
+    @apply px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md font-medium hover:bg-gray-50 transition-colors;
+  }
+  
+  /* Natural spacing helpers */
+  .section {
+    @apply py-6 px-4;
+  }
+  
+  .container-app {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 }
 
 @layer utilities {
-  .glass-effect {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+  /* Subtle animations - not overdone */
+  .fade-in {
+    animation: fadeIn 0.3s ease-in;
   }
   
-  .card-hover {
-    @apply transition-all duration-300 hover:shadow-2xl hover:-translate-y-1;
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   
-  .gradient-text {
-    @apply bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent;
+  /* Natural shadows */
+  .shadow-natural {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
   }
 }

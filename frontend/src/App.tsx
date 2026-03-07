@@ -133,42 +133,38 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen">
-      {/* Decorative Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-amber-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-      </div>
-
-      {/* Header */}
-      <header className="relative glass-effect border-b border-orange-100/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header - Natural, practical design */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div className="container-app py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3 hover:rotate-6 transition-transform">
-                <span className="text-3xl">🍽️</span>
+            {/* Logo and Title */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
               </div>
               <div>
-                <h1 className="text-3xl font-bold gradient-text tracking-tight">
-                  Delicious Dining
+                <h1 className="text-xl font-bold text-gray-900">
+                  Hotel Menu Manager
                 </h1>
-                <p className="text-sm text-gray-600 mt-1 flex items-center gap-1">
-                  <span>✨</span>
-                  {isAdmin
-                    ? 'Manage your restaurant menu'
-                    : 'Browse & order your favorite dishes'}
+                <p className="text-xs text-gray-500">
+                  {isAdmin ? 'Admin Dashboard' : 'Customer Portal'}
                 </p>
               </div>
             </div>
 
+            {/* Right side actions */}
             <div className="flex items-center gap-3">
-              {/* User badge */}
-              <div className="hidden sm:flex items-center gap-2 bg-orange-50 border border-orange-200 px-4 py-2 rounded-xl">
-                <span className="text-lg">{isAdmin ? '🔑' : '👤'}</span>
+              {/* User info */}
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-md">
+                <div className="w-7 h-7 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                  {user.username.charAt(0).toUpperCase()}
+                </div>
                 <div className="text-sm">
-                  <p className="font-semibold text-gray-800">{user.username}</p>
-                  <p className="text-xs text-orange-600 font-medium capitalize">{user.role}</p>
+                  <p className="font-medium text-gray-900">{user.username}</p>
+                  <p className="text-xs text-gray-500 capitalize">{user.role}</p>
                 </div>
               </div>
 
@@ -176,84 +172,58 @@ function App() {
               {isAdmin && activeTab === 'menu' && (
                 <button
                   onClick={handleAdd}
-                  className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white text-sm font-medium rounded-md hover:bg-orange-700 transition-colors"
                 >
-                  <svg className="w-5 h-5 transition-transform group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
-                  Add New Dish
+                  Add Item
                 </button>
               )}
 
               {/* Logout */}
               <button
                 onClick={logout}
-                className="inline-flex items-center gap-2 text-gray-600 hover:text-red-600 px-4 py-2.5 rounded-xl hover:bg-red-50 transition-all text-sm font-medium border border-gray-200 hover:border-red-200"
+                className="inline-flex items-center gap-1.5 px-3 py-2 text-gray-700 text-sm font-medium hover:bg-gray-100 rounded-md transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
-                Logout
+                <span className="hidden sm:inline">Logout</span>
               </button>
             </div>
           </div>
 
-          {/* Tab navigation (customer) */}
-          {isCustomer && (
-            <div className="flex gap-1 mt-4 bg-orange-100/50 p-1 rounded-xl w-fit">
+          {/* Tab navigation - More natural design */}
+          {(isCustomer || isAdmin) && (
+            <div className="flex gap-1 mt-4 border-b border-gray-200">
               <button
                 onClick={() => setActiveTab('menu')}
-                className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                   activeTab === 'menu'
-                    ? 'bg-white text-orange-700 shadow-sm'
-                    : 'text-gray-600 hover:text-orange-600'
+                    ? 'border-orange-600 text-orange-600'
+                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
                 }`}
               >
-                🍴 Menu
+                Menu
               </button>
               <button
                 onClick={() => setActiveTab('orders')}
-                className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                   activeTab === 'orders'
-                    ? 'bg-white text-orange-700 shadow-sm'
-                    : 'text-gray-600 hover:text-orange-600'
+                    ? 'border-orange-600 text-orange-600'
+                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
                 }`}
               >
-                📋 My Orders
-              </button>
-            </div>
-          )}
-
-          {/* Tab navigation (admin) */}
-          {isAdmin && (
-            <div className="flex gap-1 mt-4 bg-orange-100/50 p-1 rounded-xl w-fit">
-              <button
-                onClick={() => setActiveTab('menu')}
-                className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  activeTab === 'menu'
-                    ? 'bg-white text-orange-700 shadow-sm'
-                    : 'text-gray-600 hover:text-orange-600'
-                }`}
-              >
-                🍴 Menu
-              </button>
-              <button
-                onClick={() => setActiveTab('orders')}
-                className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  activeTab === 'orders'
-                    ? 'bg-white text-orange-700 shadow-sm'
-                    : 'text-gray-600 hover:text-orange-600'
-                }`}
-              >
-                📋 Customer Orders
+                {isAdmin ? 'Customer Orders' : 'My Orders'}
               </button>
             </div>
           )}
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className={`relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 ${isCustomer && cart.length > 0 ? 'pb-80' : ''}`}>
+      {/* Main Content - Natural spacing */}
+      <main className={`container-app py-6 ${isCustomer && cart.length > 0 ? 'pb-72' : ''}`}>
         {activeTab === 'menu' ? (
           <FoodList
             key={refreshKey}

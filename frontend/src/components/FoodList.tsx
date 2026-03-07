@@ -56,151 +56,155 @@ export default function FoodList({ onEdit, onDeleted, onDeleteError, isAdmin, on
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-20">
-        <div className="relative">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-200" />
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-orange-500 absolute top-0" />
-        </div>
-        <p className="mt-4 text-gray-600 font-medium animate-pulse">Loading delicious items...</p>
+      <div className="flex flex-col items-center justify-center py-16">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600" />
+        <p className="mt-4 text-sm text-gray-600">Loading menu...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="glass-effect border border-red-200 rounded-2xl p-8 text-center card-hover">
-        <div className="text-5xl mb-4">😢</div>
-        <p className="text-red-700 font-medium text-lg">{error}</p>
-        <button 
-          onClick={fetchFoods} 
-          className="mt-4 px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all shadow-md hover:shadow-lg"
-        >
-          Try Again
-        </button>
+      <div className="card p-6 border-red-200 bg-red-50">
+        <div className="flex items-start gap-3">
+          <svg className="w-5 h-5 text-red-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <p className="text-sm font-medium text-red-800">{error}</p>
+            <button 
+              onClick={fetchFoods} 
+              className="mt-2 text-sm text-red-600 hover:text-red-700 font-medium underline"
+            >
+              Try again
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (foods.length === 0) {
     return (
-      <div className="glass-effect rounded-2xl p-16 text-center card-hover">
-        <div className="text-7xl mb-6 animate-bounce">🍽️</div>
-        <h3 className="text-2xl font-bold gradient-text mb-2">No dishes yet</h3>
-        <p className="text-gray-600">Start building your menu by adding your first delicious dish!</p>
+      <div className="card p-12 text-center">
+        <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <h3 className="text-lg font-semibold text-gray-900 mb-1">No menu items yet</h3>
+        <p className="text-sm text-gray-600">Start by adding your first dish to the menu.</p>
       </div>
     );
   }
 
   return (
     <>
-      <div className="glass-effect rounded-2xl overflow-hidden card-hover">
+      {/* Header with count */}
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold text-gray-900">
+          Menu Items
+          <span className="ml-2 text-sm font-normal text-gray-500">({foods.length})</span>
+        </h2>
+      </div>
+
+      {/* Natural table design */}
+      <div className="card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full">
             <thead>
-              <tr className="bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-100">
-                <th className="text-left py-4 px-6 font-bold text-orange-800 uppercase tracking-wider text-xs">
-                  🍴 Dish Name
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="text-left py-3 px-4 text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  Name
                 </th>
-                <th className="text-left py-4 px-6 font-bold text-orange-800 uppercase tracking-wider text-xs">
-                  📂 Category
+                <th className="text-left py-3 px-4 text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  Category
                 </th>
-                <th className="text-left py-4 px-6 font-bold text-orange-800 uppercase tracking-wider text-xs">
-                  💰 Price
+                <th className="text-left py-3 px-4 text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  Price
                 </th>
-                <th className="text-left py-4 px-6 font-bold text-orange-800 uppercase tracking-wider text-xs">
+                <th className="text-left py-3 px-4 text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="text-right py-3.5 px-6 font-semibold text-gray-600 uppercase tracking-wider text-xs">
-                  {isAdmin ? 'Actions' : 'Order'}
+                <th className="text-right py-3 px-4 text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  {isAdmin ? 'Actions' : ''}
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-orange-50">
-              {foods.map((food, index) => (
-                <tr key={food.id} className="hover:bg-orange-50/50 transition-all duration-200 group" style={{ animationDelay: `${index * 50}ms` }}>
-                  <td className="py-5 px-6 font-semibold text-gray-800 group-hover:text-orange-700 transition-colors">
+            <tbody className="divide-y divide-gray-200">
+              {foods.map((food) => (
+                <tr key={food.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="py-3.5 px-4 text-sm font-medium text-gray-900">
                     {food.name}
                   </td>
-                  <td className="py-5 px-6">
+                  <td className="py-3.5 px-4">
                     <span
-                      className={`inline-block px-3 py-1.5 rounded-full text-xs font-bold shadow-sm ${
+                      className={`inline-flex px-2.5 py-1 text-xs font-medium rounded ${
                         categoryColors[food.category] ?? 'bg-gray-100 text-gray-700'
                       }`}
                     >
                       {food.category}
                     </span>
                   </td>
-                  <td className="py-5 px-6 text-gray-800 font-bold text-lg">
-                    Rs. {Number(food.price).toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  <td className="py-3.5 px-4 text-sm font-semibold text-gray-900">
+                    Rs. {Number(food.price).toLocaleString('en-LK', { minimumFractionDigits: 2 })}
                   </td>
-                  <td className="py-5 px-6">
+                  <td className="py-3.5 px-4">
                     {food.available ? (
-                      <span className="inline-flex items-center gap-2 text-green-700 text-xs font-semibold bg-green-50 px-3 py-1.5 rounded-full border border-green-200">
-                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-green-700">
+                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
                         Available
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-2 text-red-700 text-xs font-semibold bg-red-50 px-3 py-1.5 rounded-full border border-red-200">
-                        <span className="w-2 h-2 bg-red-400 rounded-full" />
-                        Sold Out
+                      <span className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500">
+                        <span className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
+                        Unavailable
                       </span>
                     )}
                   </td>
-                  <td className="py-5 px-6 text-right space-x-2">
-                    {isAdmin ? (
-                      <>
+                  <td className="py-3.5 px-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      {isAdmin ? (
+                        <>
+                          <button
+                            onClick={() => onEdit(food)}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-50 rounded transition-colors"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => setDeleteTarget(food)}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-50 rounded transition-colors"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Delete
+                          </button>
+                        </>
+                      ) : (
                         <button
-                          onClick={() => onEdit(food)}
-                          className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-blue-50 transition-all shadow-sm hover:shadow-md"
+                          onClick={() => food.available && onAddToCart?.(food)}
+                          disabled={!food.available}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded transition-colors ${
+                            food.available
+                              ? 'text-white bg-orange-600 hover:bg-orange-700'
+                              : 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                          }`}
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
                           </svg>
-                          Edit
+                          {food.available ? 'Add to Cart' : 'Unavailable'}
                         </button>
-                        <button
-                          onClick={() => setDeleteTarget(food)}
-                          className="inline-flex items-center gap-1 text-red-600 hover:text-red-700 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-red-50 transition-all shadow-sm hover:shadow-md"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                          Delete
-                        </button>
-                      </>
-                    ) : (
-                      <button
-                        onClick={() => food.available && onAddToCart?.(food)}
-                        disabled={!food.available}
-                        className={`inline-flex items-center gap-1 text-xs font-semibold px-4 py-2 rounded-lg transition-all shadow-sm hover:shadow-md ${
-                          food.available
-                            ? 'text-green-600 hover:text-green-700 hover:bg-green-50'
-                            : 'text-gray-400 cursor-not-allowed'
-                        }`}
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
-                        </svg>
-                        {food.available ? 'Add to Cart' : 'Unavailable'}
-                      </button>
-                    )}
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-
-        {/* Footer with count */}
-        <div className="bg-gradient-to-r from-orange-50 to-amber-50 border-t border-orange-100 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-700 font-semibold">
-              📊 Total Menu Items: <span className="text-orange-600">{foods.length}</span>
-            </span>
-            <span className="text-xs text-gray-500">
-              Last updated: {new Date().toLocaleDateString()}
-            </span>
-          </div>
         </div>
       </div>
 
