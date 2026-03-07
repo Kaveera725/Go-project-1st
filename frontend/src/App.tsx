@@ -5,7 +5,6 @@ import FoodList from './components/FoodList';
 import FoodFormModal from './components/FoodFormModal';
 import OrderCart from './components/OrderCart';
 import MyOrders from './components/MyOrders';
-import AdminOrders from './components/AdminOrders';
 import Toast from './components/Toast';
 import { Food, FoodInput } from './types/food';
 import { CartItem } from './types/order';
@@ -223,32 +222,6 @@ function App() {
               </button>
             </div>
           )}
-
-          {/* Tab navigation (admin) */}
-          {isAdmin && (
-            <div className="flex gap-1 mt-4 bg-orange-100/50 p-1 rounded-xl w-fit">
-              <button
-                onClick={() => setActiveTab('menu')}
-                className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  activeTab === 'menu'
-                    ? 'bg-white text-orange-700 shadow-sm'
-                    : 'text-gray-600 hover:text-orange-600'
-                }`}
-              >
-                🍴 Menu
-              </button>
-              <button
-                onClick={() => setActiveTab('orders')}
-                className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  activeTab === 'orders'
-                    ? 'bg-white text-orange-700 shadow-sm'
-                    : 'text-gray-600 hover:text-orange-600'
-                }`}
-              >
-                📋 Customer Orders
-              </button>
-            </div>
-          )}
         </div>
       </header>
 
@@ -263,8 +236,6 @@ function App() {
             isAdmin={isAdmin}
             onAddToCart={handleAddToCart}
           />
-        ) : isAdmin ? (
-          <AdminOrders />
         ) : (
           <MyOrders />
         )}

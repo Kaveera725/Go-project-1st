@@ -193,35 +193,3 @@ func GetAllOrders(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": orders})
 }
-
-// UpdateOrderStatus allows admin to update order status (preparing/complete)
-func UpdateOrderStatus(c *gin.Context) {
-	orderID := c.Param("id")
-
-	var input struct {
-		Status string `json:"status" binding:"required,oneof=pending preparing complete"`
-	}
-
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid status. Must be: pending, preparing, or complete"})
-		return
-	}
-
-	// Update order status
-	result, err := config.DB.Exec(
-		`UPDATE orders SET status = $1 WHERE id = $2`,
-		input.Status, orderID,
-	)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update order status"})
-		return
-	}
-
-	rowsAffected, _ := result.RowsAffected()
-	if rowsAffected == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Order not found"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Order status updated successfully", "status": input.Status})
-}

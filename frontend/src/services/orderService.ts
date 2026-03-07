@@ -31,11 +31,3 @@ export const getAllOrders = async (): Promise<Order[]> => {
   });
   return res.data.data;
 };
-
-export const updateOrderStatus = async (orderId: string, status: string): Promise<void> => {
-  await axios.put(
-    `${API_BASE}/orders/${orderId}/status`,
-    { status },
-    { headers: getAuthHeaders() }
-  );
-};

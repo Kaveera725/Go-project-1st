@@ -38,7 +38,6 @@ func RegisterFoodRoutes(router *gin.Engine) {
 				admin.PUT("/foods/:id", controllers.UpdateFood)
 				admin.DELETE("/foods/:id", controllers.DeleteFood)
 				admin.GET("/orders", controllers.GetAllOrders)
-				admin.PUT("/orders/:id/status", controllers.UpdateOrderStatus)
 			}
 		}
 	}
